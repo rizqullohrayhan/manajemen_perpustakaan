@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export', [BukuController::class, 'export'])->name('export');
             Route::post('/tambah', [BukuController::class, 'store'])->name('tambah');
             Route::put('/edit/{id}', [BukuController::class, 'update'])->name('edit');
-            Route::put('/upload/{id}', [BukuController::class, 'upload'])->name('upload');
+            Route::get('/download/{id}', [BukuController::class, 'download'])->name('download');
             Route::delete('/hapus/{id}', [BukuController::class, 'destroy'])->name('hapus');
         });
 
