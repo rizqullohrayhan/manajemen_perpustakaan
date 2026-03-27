@@ -49,8 +49,8 @@ class BukuController extends Controller
             'fileBuku'      => 'required|mimes:pdf'
         ]);
 
-        $cover = $request->file('cover')->store('cover');
-        $fileBuku = $request->file('fileBuku')->store('buku');
+        $cover = $request->file('cover')->store('cover', 'public');
+        $fileBuku = $request->file('fileBuku')->store('buku', 'public');
 
         $user = Auth::user()->id;
         $addBuku = Buku::create([
@@ -110,35 +110,33 @@ class BukuController extends Controller
         }
     }
 
-    public function upload(Request $request, $id)
+    public function download(Request $request, $id)
     {
-        $buku = Buku::where('id', $id)->get();
+        $buku = Buku::findOrFail($id);
         $role = Auth::user()->role;
-        $owner = $buku[0]['id_user'];
+        $owner = $buku->id_user;
         $user = Auth::user()->id;
 
         if ($role == 'user' && $user != $owner) {
             return abort(403, "Anda tidak memiliki akses ke data ini");
         }
 
-        $request->validate([
-            'fileBuku'      => 'required|mimes:pdf'
-        ]);
-
-        $fileBukuLama = $buku[0]['file_buku'];
-        Storage::delete($fileBukuLama);
-
-        $fileBuku = $request->file('fileBuku')->store('buku');
-
-        $uploadBuku = Buku::where('id', $id)->update([
-            'file_buku' => $fileBuku
-        ]);
-
-        if ($uploadBuku) {
-            return redirect()->route('buku.index')->with('success', 'File buku berhasil diupload.');
-        } else {
-            return redirect()->route('buku.index')->with('error', 'File buku gagal diupload.');
+        // Check if the file exists in storage
+        if (!Storage::disk('public')->exists($buku->file_buku)) {
+            abort(404, 'File not found');
         }
+
+        // Get the full path to the file
+        $path = Storage::disk('public')->path($buku->file_buku);
+
+        // Determine the MIME type (optional, Laravel often handles this)
+        $mimeType = Storage::disk('public')->mimeType($buku->file_buku);
+
+        // Return the file response to the browser
+        return response()->file($path, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline;'
+        ]);
     }
 
     /**
