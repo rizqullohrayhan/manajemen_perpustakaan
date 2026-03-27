@@ -72,7 +72,7 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-md-12">
-                                            <a href="#" data-target="#modalUploadBuku{{$key}}" data-toggle="modal" class="btn btn-secondary" title="Upload Buku">Upload Buku<i class='fas fa-upload fa-sm'></i></a>
+                                            <a href="{{ route('buku.download', $value->id) }}" class="btn btn-secondary" title="Download Buku">Download <i class='fas fa-save fa-sm'></i></a>
                                         </div>
                                     </div>
                                 </td>
@@ -176,38 +176,6 @@
                                 <!-- /.modal-dialog -->
                             </div>
                             <!-- /. Modal Edit -->
-                            <!-- Modal Upload -->
-                            <div class="modal fade" id="modalUploadBuku{{$key}}">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">Upload Buku</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form action="{{route('buku.upload', ['id' => $value->id])}}" method="post" enctype="multipart/form-data">
-                                        @csrf
-                                        @method('put')
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <label>File Buku <small style="color: red;">* Wajib diisi</small></label>
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="fileTambah" name='fileBuku' accept="application/pdf" required>
-                                                    <label class="custom-file-label" for="fileTambah">Choose file</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" id="uploadButton" class="btn btn-primary">Upload</button>
-                                        </div>
-                                        </form>
-                                    </div>
-                                    <!-- /.modal-content -->
-                                </div>
-                                <!-- /.modal-dialog -->
-                            </div>
-                            <!-- /. Modal Upload -->
                             @endforeach
                             @endif
                             </tbody>
